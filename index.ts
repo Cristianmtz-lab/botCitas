@@ -18,41 +18,40 @@ const parseDate = parse(`${date} ${time}`, "DD/MM/YYYY hh:mm");
 // console.log(`La proxima apertura de fechas para pasaportes es el: ${parseDate}`);
 
 if (isAfter(parseDate, new Date())) {
+    // await fetch("https://api.mailjet.com/v3.1/send", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-type": "application/json",
+    //     "Authorization": `Basic ${Buffer.from(`${process.env.MJ_PUBLIC_KEY}:${process.env.MJ_SECRET_KEY}`).toString("base64")}`
+    //   },
+    //   body: JSON.stringify({
+    //     SandboxMode: false,
+    //     Messagess: [
+    //       {
+    //         From: {
+    //           Email: "gonzalo.pozzo4@gmail.com",
+    //           Name: "Your Mailjet Pilot"
+    //         },
+    //         HTMLPart: `<h3>La proxima apertura de fechas para pasaportes es el: ${parseDate}</h3><br/>May the delivery force be with you! `,
+    //         Subjet: "Hay turno para pasaporte!",
+    //         TextPart: `La proxima apertura de fechas para pasaportes es el: ${parseDate}`,
+    //         To: [
+    //           {
+    //             Email: "crija19@outlook.es",
+    //             Name: "cristian 1"
+    //           }
+    //         ]
+    //       }
+    //     ]
+    //   })
+    // })
 
-  try {
-    await fetch("https://api.mailjet.com/v3.1/send", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        "Authorization": `Basic ${Buffer.from(`${process.env.MJ_PUBLIC_KEY}:${process.env.MJ_SECRET_KEY}`).toString("base64")}`
-      },
-      body: JSON.stringify({
-        SandboxMode: false,
-        Messagess: [
-          {
-            From: {
-              Email: "gonzalo.pozzo4@gmail.com",
-              Name: "Your Mailjet Pilot"
-            },
-            HTMLPart: `<h3>La proxima apertura de fechas para pasaportes es el: ${parseDate}</h3><br/>May the delivery force be with you! `,
-            Subjet: "Hay turno para pasaporte!",
-            TextPart: `La proxima apertura de fechas para pasaportes es el: ${parseDate}`,
-            To: [
-              {
-                Email: "crija19@outlook.es",
-                Name: "cristian 1"
-              }
-            ]
-          }
-        ]
-      })
-    })
+    await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_KEY}/sendMessage?chat_id=@botPruebaPlaywright&text=${encodeURIComponent(`La proxima apertura de fechas para pasaportes es el: ${parseDate}`)}`);
     
-  } catch (error) {
-    console.log(error);
-  }
+  
 } else {
+  await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_KEY}/sendMessage?chat_id=@botPruebaPlaywright&text=${encodeURIComponent(`No hay fehcas estipuladas`)}`)
   console.log(`No hay fehcas estipuladas`);
 }
 
-await browser.close();
+browser.close();
